@@ -16,72 +16,65 @@ Node* tmpend = nullptr;
 
 void Kill(Node*& head, Node*& tail)
 {
-	Node* carrent;
-	carrent = head;
-	while (carrent->next != nullptr)
+	if (head != nullptr)
 	{
-		carrent = carrent->next;
+		Node* carrent;
+		carrent = head;
+		while (carrent->next != nullptr)
+		{
+			carrent = carrent->next;
+			delete(head);
+			head = carrent;
+		}
+		head = tail;
 		delete(head);
-		head = carrent;
+		head = nullptr;
+		tail = nullptr;
 	}
-	head = tail;
-	delete(head);
-	delete(tail);
-	tail = nullptr;
-	head = nullptr;
-	std::cout << "Список пуст ";
 }
 
 void AddElem(Node*& head, Node*& tail, int n)
 {
-	Node* elem;
 	Node* carrent;
+	Node* TMP;
+	TMP = new Node;
+	TMP->data = n;
+	TMP->next = nullptr;
+	TMP->prev = nullptr;
 	if (head == nullptr)
 	{
-		head = new Node;
-		head->data = n;
-		head->next = nullptr;
-		head->prev = nullptr;
-		tail = head;
+		head = TMP;
+		tail = TMP;
 	}
 	else
 	{
 		carrent = head;
 			if ((head->data > n)&&(head->data!=n))
 			{
-				elem = new Node;
-				elem->next = head;
-				elem->prev = nullptr;
-				elem->data = n;
-				head->prev = elem;
-				head = elem;
+				TMP->next = head;
+				TMP->prev = nullptr;
+				head->prev = TMP;
+				head = TMP;
 			}
 			else
 			{
-				while (carrent->next != nullptr)
+				while ((carrent->next != nullptr) && (carrent->data < n))
 				{
-					if ((carrent->data < n) && (carrent->data!=n))
 						carrent = carrent->next;
-					else
-						break;
 				}
 				if ((carrent->data > n) && (carrent->data != n))
 				{
-					elem = new Node;
-					elem->data = n;
-					elem->prev = carrent->prev;
-					carrent->prev->next = elem;
-					elem->next = carrent;
-					carrent->prev = elem;
+					TMP->prev = carrent->prev;
+					carrent->prev->next = TMP;
+					TMP->next = carrent;
+					carrent->prev = TMP;
 				}
 				else if ((carrent->data < n) && (carrent->data != n))
 				{
-					elem = new Node;
-					carrent->next = elem;
-					elem->next = nullptr;
-					elem->prev = carrent;
-					elem->data = n;
-					tail = elem;
+					carrent->next = TMP;
+					TMP->next = nullptr;
+					TMP->prev = carrent;
+					tail = TMP;
 				}
 			}
 	}
@@ -92,9 +85,7 @@ void DelElem(Node*& head, Node*& tail, int dm)
 	Node* elem;
 	Node* carrent;
 	carrent = head;
-	if (head == nullptr)
-		std::cout << "Список пуст ";
-	else
+	if (head != nullptr)
 	{
 		if ((head->data == dm) && (carrent->next != nullptr))
 		{
@@ -121,50 +112,42 @@ void DelElem(Node*& head, Node*& tail, int dm)
 				carrent->prev->next = nullptr;
 				delete(carrent);
 			}
-			else
-				std::cout << "Такого числа нет " << std::endl;
 		}
 		else if ((head->prev == nullptr) && (head->next == nullptr))
 		{
 			tail = head;
-			delete(tail);
 			delete(head);
-			tail = nullptr;
 			head = nullptr;
+			tail = nullptr;
 		}
 	}
 }
 
-void Serch(Node*& head, Node* tail, int dm)
+bool Serch(Node*& head, Node* tail, int dm)
 {
 	bool f = 0;
 	Node* carrent;
-	if (head == nullptr)
-		std::cout << "Список пуст " << std::endl;
-	else
+	if (head != nullptr)
 	{
 		carrent = head;
 		while (carrent != nullptr)
 		{
 			if (carrent->data == dm)
 			{
-				std::cout << carrent->data << " ";
 				f = 1;
+				return true;
 			}
 			carrent = carrent->next;
 		}
 		if (f == 0)
-			std::cout << "Такого элемента в списке нет ";
-		std::cout << std::endl;
+			return false;
 	}
 }
 
 void PrintList(Node* head, Node* tail)
 {
 	Node* carrent;
-	if (head == nullptr)
-		std::cout << "Список пуст "<<std::endl;
-	else 
+	if (head != nullptr) 
 	{
 		carrent = head;
 		while (carrent != nullptr)
@@ -178,8 +161,6 @@ void PrintList(Node* head, Node* tail)
 
  void AddLists(Node*& stare, Node* temp, Node* head, Node*tail, Node* tmp, Node* tmpend)
 {
-	 Node* carrent;
-	 carrent = stare;
 	 while (head != nullptr)
 	 {
 		 AddElem(stare, temp, head->data);
@@ -187,27 +168,14 @@ void PrintList(Node* head, Node* tail)
 	 }
 	 while (tmp != nullptr)
 	 {
-		 while (carrent != nullptr)
-		 {
-			 if ((tmp->data == carrent->data)&&(tmp != nullptr))
-			 { 
-				 tmp = tmp->next;
-				 carrent = stare;
-			 }
-			 else
-			 {
-				 carrent = carrent->next;
-			 }
-		 }
 		 AddElem (stare, temp, tmp->data);
 		 tmp = tmp->next;
-		 carrent = stare;
 	 }
 }
 
 int main()
 {
-	int k, dm;
+	int dm;
 	setlocale(LC_ALL, "Russian");
 	Node* P_begin = nullptr;
 	Node* P_end = nullptr;
@@ -215,34 +183,25 @@ int main()
 	Node* P_begin1 = nullptr;
 	Node* P_end1 = nullptr;
 	Node* P_result1 = nullptr;
-	std::cout << "Введите количество элементов в списке: ";
-	std::cin >> k;
-	std::cout << "Введите элементы списка: " << std::endl;
-	for (int i = 0; i < k; i++)
-	{
-		std::cin >> dm;
-		AddElem(P_begin, P_begin1, dm);
-	}
+	Kill(P_begin, P_begin1);
+	DelElem(P_begin, P_begin1, 1);
 	PrintList(P_begin, P_begin1);
-	//Kill(P_begin, P_begin1);
-	std::cout << "Введите какой элемент удалить: ";
-	std::cin >> dm;
-	DelElem(P_begin, P_begin1, dm);
+	AddElem(P_begin, P_begin1, 10);
+	AddElem(P_begin, P_begin1, 5);
+	AddElem(P_begin, P_begin1, 15);
+	AddElem(P_begin, P_begin1, 7);
+	AddElem(P_begin, P_begin1, 5);
+	AddElem(P_begin, P_begin1, 15);
 	PrintList(P_begin, P_begin1);
-	std::cout << P_begin1->data << std::endl;
-	std::cout << "Введите какой элемент хотите найти: ";
-	std::cin >> dm;
-	Serch(P_begin, P_begin1, dm);
-	std::cout << "Введите количество элементов в списке: ";
-	std::cin >> k;
-	std::cout << "Введите элементы списка: " << std::endl;
-	for (int i = 0; i < k; i++)
-	{
-		std::cin >> dm;
-		AddElem(P_end, P_end1, dm);
-	}
-	PrintList(P_end, P_end1);
-	//Kill(P_end, P_end1);
+	DelElem(P_begin, P_begin1, 7);
+	std::cout << Serch(P_begin, P_begin1, 20) << std::endl;
+	PrintList(P_begin, P_begin1);
+	AddElem(P_end, P_end1, 10);
+	AddElem(P_end, P_end1, 5);
+	AddElem(P_end, P_end1, 15);
+	AddElem(P_end, P_end1, 7);
+	AddElem(P_end, P_end1, 5);
+	AddElem(P_end, P_end1, 15);
 	AddLists(P_result, P_result1, P_begin, P_begin1, P_end, P_end1);
 	PrintList(P_result, P_result1);
 	Kill(P_result, P_result1);
