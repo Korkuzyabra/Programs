@@ -1,0 +1,26 @@
+﻿uses DrRa;
+var a,b,m,n:integer;
+begin;
+  writeln('Введите числитель первой дроби:');
+  readln(a);
+  writeln('Введите знаменатель первой дроби:');
+  readln(b);
+  writeln('Введите числитель второй дроби:');
+  readln(m);
+  writeln('Введите знаменатель второй дроби:');
+  readln(n);
+  writeln (a,'/',b,' ',m,'/',n);
+  writeln;
+  writeln('Сокращённая первая дробь: ');
+  Sokr(a,b);
+  writeln('Сокращённая вторая дробь: ');
+  Sokr(m,n);
+  writeln('Сумма дробей: ');
+  Slozh(a,b,m,n);
+  writeln('Разность дробей: ');
+  Raz(a,b,m,n);
+  writeln('Произведение дробей: ');
+  Proiz(a,b,m,n);
+  writeln('Частное дробей: ');
+  Delen(a,b,m,n);
+end.
